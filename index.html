@@ -1158,13 +1158,124 @@
 
         /* ── RESPONSIVE ── */
         @media (max-width: 1200px) { #tilt-container { transform: scale(0.65) rotateX(68deg); } }
-        @media (max-width: 800px)  {
-            #head-model { width: 74px; height: 92px; top: 250px; margin-left: -37px; }
-            #tilt-container { transform: scale(0.45) rotateX(68deg); }
+        @media (max-width: 900px)  {
+            #tilt-container { transform: scale(0.55) rotateX(68deg); }
             .modal-container { width: 95%; }
             .system-block { top: 20px; left: 20px; }
+            #head-model { width: 74px; height: 92px; top: 250px; margin-left: -37px; }
         }
-        @media (max-width: 500px)  { #tilt-container { transform: scale(0.3) rotateX(68deg); } }
+
+        /* ── PHONES ──
+           The single most important rule here is the overflow clipping. The
+           dial's spokes and labels are far wider than a phone screen, and left
+           to overflow, a mobile browser widens its layout viewport to fit them
+           and scales the whole page down — which is what made every overlay
+           look tiny and piled on top of itself. Clipping keeps 1 CSS px = 1 px
+           and lets everything below actually land where it's told. */
+        @media (max-width: 760px) {
+            html, body { overflow: hidden; max-width: 100%; }
+            #scene { overflow: hidden; }
+
+            /* The ring now bleeds off both edges on purpose — the card at the
+               front is the subject, and the rest reads as a carousel. The
+               translate centres that front card: the selector sits 20° round
+               the dial, so the active card lands measurably left of the hub
+               (119px at this scale, the same on every phone size tested). */
+            #tilt-container {
+                transform: translate(73px, 0) scale(0.52) rotateX(68deg);
+            }
+
+            /* Top left: frame counter, with credits tucked under it */
+            .system-block { top: 14px; left: 14px; }
+            .metadata-block { font-size: 9px; letter-spacing: 1px; }
+            #credits-btn { font-size: 9px; margin-top: 7px; }
+
+            /* Top right: the name, sized to clear the counter opposite */
+            #emboss-name { top: 14px; right: 14px; }
+            #emboss-title { font-size: 11px; }
+            #emboss-sub   { font-size: 6px; letter-spacing: 1px; }
+
+            /* Nav drops to the bottom, in thumb reach, above the filters.
+               Padding is for fingertips, not for looks. */
+            #top-nav { top: auto; bottom: 60px; gap: 2px; }
+            .nav-btn { font-size: 9px; padding: 11px 12px; letter-spacing: 1px; }
+
+            #filter-nav { bottom: 16px; gap: 6px; }
+            .filter-btn { font-size: 8px; padding: 8px 10px; }
+
+            /* A keyboard hint list and a fake mouse crosshair are nonsense on a
+               touch screen, and the counter ring has nowhere left to sit. */
+            #hint, #cursor-crosshair, #counter-ring { display: none !important; }
+            body { cursor: auto; }
+
+            #degree-indicator { bottom: 14px; right: 12px; font-size: 15px; }
+
+            /* The head goes below the about text instead of through it */
+            #head-model {
+                top: auto; bottom: 104px;
+                width: 60px; height: 75px; margin-left: -30px;
+            }
+
+            /* Contact: smaller type so the email fits, and the hint is now a
+               real tap target rather than a note about a key phones don't have */
+            .contact-label { margin-bottom: 26px; }
+            .contact-name  { font-size: 12px; margin-bottom: 26px; letter-spacing: 1px; }
+            .contact-row   { gap: 10px; margin-bottom: 16px; }
+            .contact-type  { min-width: 38px; }
+            .contact-value { font-size: 12px; }
+            .contact-esc   { bottom: 18px; right: 50%; transform: translateX(50%);
+                             padding: 10px; }
+
+            /* The dossier is a draggable desktop panel placed by JS; there is
+               no room for it beside a video on a phone. */
+            #dossier { display: none !important; }
+            /* border-box, or the 2px border pushes it 4px wider than the
+               screen; and the big offset shadow has nowhere to fall here */
+            .modal-container { width: 100%; box-sizing: border-box; box-shadow: none; }
+
+            /* Credits roll: narrower columns so names don't wrap mid-word */
+            #credits-roll { width: 92vw; }
+            .cr-row  { gap: 12px; }
+            .cr-role { font-size: 8px; }
+            .cr-name b { font-size: 11px; }
+            .cr-big  { font-size: 20px; letter-spacing: 5px; }
+            .cr-sub  { font-size: 9px; letter-spacing: 3px; }
+        }
+
+        /* Short phones (SE and similar): at the size above, the spoke labels
+           run down underneath the nav. Shrink the dial and lift it clear.
+           The x offset scales with the dial, so it keeps the card centred. */
+        @media (max-width: 760px) and (max-height: 700px) {
+            #tilt-container {
+                transform: translate(65px, -18px) scale(0.46) rotateX(68deg);
+            }
+            #top-nav { bottom: 54px; }
+            #filter-nav { bottom: 14px; }
+        }
+        /* Very small screens (old SE) need one more step down */
+        @media (max-width: 760px) and (max-height: 600px) {
+            #tilt-container {
+                transform: translate(56px, -24px) scale(0.40) rotateX(68deg);
+            }
+            #emboss-sub { display: none; }
+        }
+
+        /* Landscape phones: almost no height, so the dial has to come right
+           down and the bottom chrome needs to be compact. */
+        @media (max-height: 460px) and (orientation: landscape) {
+            html, body { overflow: hidden; }
+            #scene { overflow: hidden; }
+            #tilt-container { transform: translate(41px, -10px) scale(0.34) rotateX(68deg); }
+            #hint, #cursor-crosshair, #counter-ring { display: none !important; }
+            body { cursor: auto; }
+            #top-nav { top: 12px; bottom: auto; left: auto; right: 12px; transform: none; }
+            .nav-btn { font-size: 8px; padding: 8px 9px; }
+            #filter-nav { bottom: 10px; }
+            .filter-btn { font-size: 8px; padding: 6px 8px; }
+            #emboss-name { display: none; }
+            #degree-indicator { bottom: 10px; right: 12px; font-size: 14px; }
+            #dossier { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -1235,7 +1346,10 @@
 </div>
 
 <!-- CONTACT OVERLAY -->
-<div id="contact-overlay">
+<!-- Tapping the backdrop closes it. Without this the only ways out were ESC
+     and the nav button, and on a phone this overlay covers the nav — so a
+     touch visitor had no way back to the site. -->
+<div id="contact-overlay" onclick="if(event.target===this)closeContact()">
     <div class="contact-inner">
         <div class="contact-label">// GET IN TOUCH //</div>
         <div class="contact-name">&lt;Conor McNeilly&gt;</div>
@@ -1248,7 +1362,7 @@
             <a class="contact-value" id="contact-email" href="#">conormcneilly7 [at] gmail.com</a>
         </div>
     </div>
-    <div class="contact-esc">ESC to close</div>
+    <div class="contact-esc" id="contact-esc" onclick="closeContact()">ESC to close</div>
 </div>
 <div id="hint">
     DRAG / SCROLL &nbsp;rotate<br>
@@ -3257,7 +3371,8 @@ function buildCredits() {
 
     const hint = document.createElement('div');
     hint.id = 'credits-hint';
-    hint.textContent = 'CLICK OR PRESS ANY KEY TO EXIT';
+    hint.textContent = (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window)
+        ? 'TAP TO EXIT' : 'CLICK OR PRESS ANY KEY TO EXIT';
     wrap.appendChild(hint);
 
     document.body.appendChild(wrap);
@@ -3802,8 +3917,16 @@ function buildAboutStrings() {
     aParticles = [];
     const W = aboutCanvas.width;
 
-    // Centered block — never wider than 60% of the screen or 640px
-    const blockWidth = Math.min(W * 0.6, 640);
+    // Phone screens need tighter letter metrics and a much wider column —
+    // at desktop spacing the paragraph runs off both edges of a 390px screen.
+    const narrow = W < 760;
+    A_CFG.charSpacing = narrow ?  7 :   9;
+    A_CFG.fontSize    = narrow ? 11 :  14;
+    A_CFG.lineHeight  = narrow ? 19 :  26;
+    A_CFG.mouseRadius = narrow ? 70 : 120;
+
+    // Centered block — 60% of a desktop screen, nearly all of a phone's
+    const blockWidth = narrow ? W * 0.92 : Math.min(W * 0.6, 640);
     const maxChars   = Math.floor(blockWidth / A_CFG.charSpacing);
 
     // Word-wrap the paragraph into lines
@@ -3819,7 +3942,7 @@ function buildAboutStrings() {
     }
     if (line) lines.push(line);
 
-    const topY = 90;
+    const topY = narrow ? 64 : 90;
     aHiddenOffset = -(lines.length * A_CFG.lineHeight + topY + 160);
 
     lines.forEach((text, row) => {
@@ -4240,6 +4363,13 @@ try {
         requestAnimationFrame(step);
     }
 })();
+
+// ── TOUCH DEVICES ────────────────────────
+// The close hint names a key that phones don't have. Say something true.
+if (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window) {
+    const esc = document.getElementById('contact-esc');
+    if (esc) esc.textContent = 'TAP TO CLOSE';
+}
 
 // ── IFRAME FOCUS ─────────────────────────
 // When this page is embedded (Squarespace, Notion, anywhere), keyboard events
